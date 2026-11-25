@@ -7,10 +7,6 @@
 
 include $(TOPDIR)/rules.mk
 
-PKG_NAME:=luci-app-aliddns
-PKG_VERSION:=2.1.0
-PKG_RELEASE:=1
-
 PKG_LICENSE:=MIT
 PKG_LICENSE_FILES:=LICENSE
 PKG_MAINTAINER:=honwen <https://github.com/honwen/>
@@ -35,36 +31,6 @@ define Build/Prepare/luci-app-aliddns
 	chmod 0600 $(PKG_BUILD_DIR)/root/etc/config/aliddns
 endef
 
-define Package/luci-app-aliddns/postinst
-#!/bin/sh
-[ -n "$${IPKG_INSTROOT}" ] && exit 0
-if [ -f /etc/uci-defaults/40_luci-aliddns ]; then
-	( . /etc/uci-defaults/40_luci-aliddns ) && rm -f /etc/uci-defaults/40_luci-aliddns
-fi
-rm -f /tmp/luci-indexcache /tmp/luci-indexcache.*
-rm -rf /tmp/luci-modulecache/
-[ -x /etc/init.d/rpcd ] && /etc/init.d/rpcd restart >/dev/null 2>&1 || true
-[ -x /etc/init.d/aliddns ] && {
-	/etc/init.d/aliddns enable >/dev/null 2>&1 || true
-	/etc/init.d/aliddns reload >/dev/null 2>&1 || true
-}
-exit 0
-endef
-
-define Package/luci-app-aliddns/prerm
-#!/bin/sh
-[ -n "$${IPKG_INSTROOT}" ] && exit 0
-if [ -x /etc/init.d/aliddns ]; then
-	/etc/init.d/aliddns stop >/dev/null 2>&1 || true
-	/etc/init.d/aliddns disable >/dev/null 2>&1 || true
-fi
-exit 0
-endef
-
-ifneq ($(wildcard $(TOPDIR)/feeds/luci/luci.mk),)
-  include $(TOPDIR)/feeds/luci/luci.mk
-else
-  include ../../luci.mk
-endif
+include $(TOPDIR)/feeds/luci/luci.mk
 
 # call BuildPackage - OpenWrt buildroot signature
