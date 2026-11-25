@@ -7,6 +7,8 @@
 
 include $(TOPDIR)/rules.mk
 
+PKG_NAME:=luci-app-aliddns
+
 PKG_LICENSE:=MIT
 PKG_LICENSE_FILES:=LICENSE
 PKG_MAINTAINER:=honwen <https://github.com/honwen/>
